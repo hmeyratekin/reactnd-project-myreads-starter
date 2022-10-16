@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
 
 class Book extends Component {
     static propTypes = {
@@ -26,11 +25,8 @@ class Book extends Component {
         const { book } = this.props
         const { shelfValue } = this.state
 
-        console.log('rendered',book);
-
-        console.log('rendered',shelfValue);
         return (
-            <li>
+            <li key={book.id}>
                 <div className="book">
                     <div className="book-top">
                         <div className="book-cover" style={{ width: 128, height: 193, backgroundImage:`url(${book.imageLinks.smallThumbnail})`}}></div>
@@ -45,7 +41,13 @@ class Book extends Component {
                         </div>
                     </div>
                     <div className="book-title">{book.title}</div>
-                    <div className="book-authors">{book.authors[0]}</div>
+                    {book.authors &&
+                        book.authors.length &&
+                        book.authors.map((author, index) => (
+                            <div key={index} className="book-authors">
+                                {author}
+                            </div>
+                        ))}
                 </div>
             </li>
         )

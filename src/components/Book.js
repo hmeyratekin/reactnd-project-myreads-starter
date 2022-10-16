@@ -4,23 +4,38 @@ import { Link } from 'react-router-dom'
 
 class Book extends Component {
     static propTypes = {
-        //contacts: PropTypes.array.isRequired,
-        //onDeleteContact: PropTypes.func.isRequired,
-        book: PropTypes.object.isRequired
+        book: PropTypes.object.isRequired,
+        onMoveBook: PropTypes.func.isRequired
     }
     state = {
-        query: ''
+        shelfValue: this.props.book.shelf
+    }
+
+    moveTo = (e) => {
+        e.preventDefault()
+        console.log(e.target)
+        const shelf = e.target.value
+        const book = this.props.book
+        console.log('shelf',shelf)
+        console.log('book',book)
+        if (this.props.onMoveBook)
+            this.props.onMoveBook(book, shelf)
     }
 
     render() {
         const { book } = this.props
+        const { shelfValue } = this.state
+
+        console.log('rendered',book);
+
+        console.log('rendered',shelfValue);
         return (
             <li>
                 <div className="book">
                     <div className="book-top">
-                        <div className="book-cover" style={{ width: 128, height: 193, backgroundImage:`url(${book.imageLinks.thumbnail})`}}></div>
+                        <div className="book-cover" style={{ width: 128, height: 193, backgroundImage:`url(${book.imageLinks.smallThumbnail})`}}></div>
                         <div className="book-shelf-changer">
-                            <select>
+                            <select onChange={this.moveTo} value={shelfValue}>
                                 <option value="move" disabled>Move to...</option>
                                 <option value="currentlyReading">Currently Reading</option>
                                 <option value="wantToRead">Want to Read</option>

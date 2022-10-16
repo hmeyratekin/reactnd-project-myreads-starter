@@ -5,19 +5,14 @@ import Book from "./Book";
 class Shelf extends Component {
     static propTypes = {
         books: PropTypes.array.isRequired,
+        onMoveBook: PropTypes.func.isRequired
     }
     state = {
         shelfType: ''
     }
-    updateShelfType = (shelfType) => {
-        this.setState(() => ({
-            shelfType: shelfType.trim()
-        }))
-    }
-    render() {
-        const { shelfType } = this.state
-        const { books } = this.props
 
+    render() {
+        const { books, onMoveBook } = this.props
         const wantToReadBooks = books.filter((book) => book.shelf === 'wantToRead');
         const readBooks = books.filter((book) => book.shelf ==='read');
         const currentlyReading = books.filter((book) => book.shelf ==='currentlyReading');
@@ -32,7 +27,7 @@ class Shelf extends Component {
                     <div className="bookshelf-books">
                         <ol className="books-grid">
                             {currentlyReading.map((book) => (
-                                <Book key={book.id} book={book}></Book>
+                                <Book key={book.id} book={book} onMoveBook = {onMoveBook}></Book>
                             ))}
                         </ol>
                     </div>
@@ -43,7 +38,7 @@ class Shelf extends Component {
                     <div className="bookshelf-books">
                         <ol className="books-grid">
                             {wantToReadBooks.map((book) => (
-                                <Book key={book.id} book={book}></Book>
+                                <Book key={book.id} book={book} onMoveBook = {onMoveBook}></Book>
                             ))}
                         </ol>
                     </div>
@@ -54,7 +49,7 @@ class Shelf extends Component {
                     <div className="bookshelf-books">
                         <ol className="books-grid">
                             {readBooks.map((book) => (
-                                <Book key={book.id} book={book}></Book>
+                                <Book key={book.id} book={book} onMoveBook = {onMoveBook}></Book>
                             ))}
                         </ol>
                     </div>

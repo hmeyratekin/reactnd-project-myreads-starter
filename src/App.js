@@ -24,6 +24,22 @@ class BooksApp extends React.Component {
           }))
         })
   }
+
+  moveBook = (book, shelf) => {
+    this.setState((state) => {
+      state.books.map((b) => {
+        if(b.id === book.id) {
+          b.shelf = shelf
+          return b;
+        } else {
+          return b;
+        }
+      })
+    })
+
+    BooksAPI.update(book, shelf)
+  }
+
   render() {
     return (
       <div className="app">
@@ -50,7 +66,7 @@ class BooksApp extends React.Component {
           </div>
         ) : (
           <div className="list-books">
-            <Shelf books={this.state.books}></Shelf>
+            <Shelf books={this.state.books} onMoveBook={this.moveBook}></Shelf>
             <div className="open-search">
               <button onClick={() => this.setState({ showSearchPage: true })}>Add a book</button>
             </div>

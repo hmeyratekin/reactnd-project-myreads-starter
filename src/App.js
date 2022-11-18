@@ -22,7 +22,7 @@ class App extends React.Component {
   componentDidMount() {
     BooksAPI.getAll()
         .then((books) => {
-          this.setState(() => ({
+            this.setState(() => ({
             books
           }))
         })
@@ -30,7 +30,7 @@ class App extends React.Component {
 
   moveBook = (book, shelf) => {
 
-    BooksAPI.update(book, shelf).then(books => {
+    BooksAPI.update(book, shelf).then(() => {
         book.shelf = shelf;
         this.setState(state => ({
             books: state.books.filter(b => b.id !== book.id).concat([book])
@@ -38,19 +38,6 @@ class App extends React.Component {
     })
   }
 
-  onSearchBook = (query) => {
-    console.log(query)
-    BooksAPI.search(query).then(result => {
-
-      let searchResult = Array.isArray(result) ? result : Array.of(result);
-      if (searchResult[0].error)
-        searchResult = []
-      console.log('searchResult', searchResult)
-      this.setState(() => ({
-            searchResult
-          }));
-        }).catch((error) => (console.log(error)));
-  }
 
   render() {
     return (
@@ -71,7 +58,7 @@ class App extends React.Component {
                   exact
                   path="/search"
                   render={() => (
-                      <Search searchBook={this.onSearchBook} searchResult={this.state.searchResult} moveBook={this.moveBook}></Search>
+                      <Search  moveBook={this.moveBook} books={this.state.books}></Search>
                   )}
               />
       </div>

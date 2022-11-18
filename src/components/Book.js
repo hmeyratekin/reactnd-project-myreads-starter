@@ -24,12 +24,14 @@ class Book extends Component {
     render() {
         const { book } = this.props
         const { shelfValue } = this.state
+        const imageLinks = book.imageLinks ? book.imageLinks : null;
+        const thumbnail = imageLinks ? imageLinks.smallThumbnail ? book.imageLinks.smallThumbnail : book.imageLinks.thumbnail ? book.imageLinks.thumbnail : '' : '';
 
         return (
             <li key={book.id}>
                 <div className="book">
                     <div className="book-top">
-                        <div className="book-cover" style={{ width: 128, height: 193, backgroundImage:`url(${book.imageLinks.smallThumbnail})`}}></div>
+                        <div className="book-cover" style={{ width: 128, height: 193, backgroundImage:`url(${thumbnail})`}}></div>
                         <div className="book-shelf-changer">
                             <select onChange={this.moveTo} value={shelfValue}>
                                 <option value="move" disabled>Move to...</option>

@@ -2,16 +2,16 @@ import React, {Component} from "react";
 import PropTypes from "prop-types";
 import Book from "./Book";
 import {Link} from "react-router-dom";
+import * as BooksAPI from "../BooksAPI";
 
 class Search extends Component {
     static propTypes = {
-        searchBook : PropTypes.func.isRequired,
-        searchResult: PropTypes.array.isRequired,
         moveBook: PropTypes.func.isRequired
     }
 
     state = {
-        query: ''
+        query: '',
+        searchResult: []
     }
 
     updateQuery = query => {
@@ -19,16 +19,49 @@ class Search extends Component {
         this.searchBooks(query);
     };
 
+    onSearchBook = (query) => {
 
-    searchBooks = query => {
-        console.log('query',query)
-        if (this.props.searchBook)
-            this.props.searchBook(query)
+        this.setState({ query });
+
+        if (!query || query==='') {
+            let searchResult = [];
+            this.setState(() => ({searchResult}));
+        } else {
+
+            BooksAPI.search(query.trim()).then(result => {
+
+                let searchResult = Array.isArray(result) ? result : Array.of(result);
+
+                if (searchResult[0].error) {
+                    this.setState(() => ({ searchResult: [] }))
+                } else {
+                    this.matchWithMyBooks(result)
+                    this.setState(() => ({ searchResult: result }))
+                }
+                console.log('searchResult', searchResult)
+                this.setState(() => ({
+                    searchResult
+                }));
+            }).catch((error) => (console.log(error)));
+        }
     }
 
+    matchWithMyBooks = (books) => {
+        books.forEach((book) => {
+            book.shelf = 'none';
+            this.props.books.forEach((myBook) => {
+                if (myBook.id === book.id) {
+                    book.shelf = myBook.shelf;
+                }
+            });
+        });
+        return books;
+    };
+
+
     render() {
-        const { query } = this.state;
-        const { searchResult, moveBook } = this.props;
+        const { query, searchResult } = this.state;
+        const { moveBook } = this.props;
         return (
             <div className="search-books">
                 <div className="search-books-bar">
@@ -37,7 +70,7 @@ class Search extends Component {
                         Close
                     </Link>
                     <div className="search-books-input-wrapper">
-                        <input type="text" value={query} onChange={event => this.updateQuery(event.target.value)}
+                        <input type="text" value={query} onChange={event => this.onSearchBook(event.target.value)}
                                placeholder="Search by title or author"/>
                     </div>
                 </div>
